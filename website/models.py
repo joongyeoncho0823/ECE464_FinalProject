@@ -1,6 +1,7 @@
 from . import db
 from flask_login import UserMixin
 from sqlalchemy.sql import func
+from sqlalchemy import *
 
 
 class Note(db.Model):
@@ -22,10 +23,15 @@ class User(db.Model, UserMixin):
 
 class UserDiscussion(db.Model):
     __tablename__ = 'UserDiscussion'
+    id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey(
-        'user.id', ondelete='CASCADE'), primary_key=True)
+        'user.id', ondelete='CASCADE'))
     discussion_id = db.Column(
         db.Integer, db.ForeignKey('discussion.id', ondelete='CASCADE'))
+
+
+# user_discussion = db.Table('user_discussion', db.Model.metadata, db.Column('user_id', db.Integer, db.ForeignKey(
+#     'user.id')), db.Column('discussion_id', db.Integer, db.ForeignKey('discussion.id')))
 
 
 class Discussion(db.Model):

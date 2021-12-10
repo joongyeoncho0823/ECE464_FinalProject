@@ -1,21 +1,20 @@
 {% extends "base.html" %} {% block title %}Home{% endblock %} {% block content
 %}
 <h1 align="center">Posts</h1>
+<a href="/add">
+  <button class="btn btn-primary">Add Post</button>
+</a>
 <ul class="list-group list-group-flush" id="notes">
   {% for note in user.notes %}
-  <li class="list-group-item">
-    {{ note.data }}
-    <button type="button" class="close" onClick="deleteNote({{ note.id }})">
-      <span aria-hidden="true">&times;</span>
-    </button>
-  </li>
+    <div class="card" style="width: 80rem;">
+      <div class="card-body">
+        <h5 class="card-title">{{user.first_name}} -> Discussion_Name</h5>
+        <p class="card-text">{{ note.data }}</p>
+        <button type="button" class="close" onClick="deleteNote({{ note.id }})">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+    </div>
   {% endfor %}
 </ul>
-<form method="POST">
-  <textarea name="note" id="note" class="form-control"></textarea>
-  <br />
-  <div align="center">
-    <button type="submit" class="btn btn-primary">Post</button>
-  </div>
-</form>
 {% endblock %}
