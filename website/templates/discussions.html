@@ -1,6 +1,13 @@
-{% extends "base.html" %} {% block title %}Login{% endblock %} {% block content
+{% extends "base.html" %} {% block title %}My Discussions{% endblock %} {% block content
 %}
 <h3 align="center">My Groups</h3>
 
+
+
+{% for note in user.notes%}
+{{user.discussions}}
+{{note.data}}
+<br><br>
+{%endfor%}
 
 {% endblock %}
