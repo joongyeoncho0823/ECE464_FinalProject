@@ -1,0 +1,18 @@
+{% extends "base.html" %} {% block title %}Join Group{% endblock %} {% block content
+%}
+<h3 align="center">Choose a Group To Choose</h3>
+
+</div>
+<div align = "center" class="d-flex p-3">
+<form method="POST" action="/addGroup">
+    <h3 align="center">Create a New Group</h3>
+    <div class="form-group">
+        <label for="groupName">Name of Group</label>
+        <input type="text" class="form-control" id="groupName" name="groupName" placeholder="Enter name of group" />
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+</div>
+
+{% endblock %}
+
