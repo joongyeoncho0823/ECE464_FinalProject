@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify
 from flask_login import login_required, current_user
 from .models import Note, Discussion
-from . import db
+from .db_config import db
 import json
 
 views = Blueprint('views', __name__)
@@ -42,11 +42,12 @@ def delete_note():
 def add():
     if request.method == 'POST':
         note = request.form.get('note')
-
+        title = request.form.get('title')
+        # title = request.form.get('title')
         if len(note) < 1:
-            flash('Note is too short!', category='error')
+            flash('Post is too short!', category='error')
         else:
-            new_note = Note(data=note, user_id=current_user.id)
+            new_note = Note(title=title, data=note, user_id=current_user.id)
             db.session.add(new_note)
             db.session.commit()
             flash('Posted!', category='success')
