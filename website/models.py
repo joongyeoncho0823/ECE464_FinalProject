@@ -37,3 +37,4 @@ class Discussion(db.Model):
     participants = db.relationship('User', secondary='UserDiscussion')
     # posts = db.relationship('Note', backref='group', lazy=True)
     # password = db.Column(db.String(150))
+    # djfasdf
