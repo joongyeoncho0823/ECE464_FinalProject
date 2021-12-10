@@ -8,7 +8,7 @@
   {% for note in user.notes %}
     <div class="card" style="width: 80rem;">
       <div class="card-body">
-        <h5 class="card-title"><a href="{{url_for('profile.viewOtherProfile', user_id = note.author.id)}}">{{note.author.first_name}}</a> -> {{user.discussions}}</h5>
+        <h5 class="card-title"><a href="{{url_for('profile.viewProfile', user_id = note.author.id)}}">{{note.author.first_name}}</a> -> {{user.discussions}}</h5>
         <p class="card-text">{{ note.data }}</p>
         <button type="button" class="close" onClick="deleteNote({{ note.id }})">
           <span aria-hidden="true">&times;</span>

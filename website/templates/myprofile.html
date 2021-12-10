@@ -5,6 +5,9 @@
     <h3 align="center">Profile</h3> <br /><br />
     <p class="profile__heading">Name: <span class="profile__heading-data">{{ user.first_name}}</span></p>
     <p class="profile__heading">Email: <span class="profile__heading-data">{{ user.email }}</span></p>
+    {%if user.id == current_user.id%}
+    <p class="profile__heading">Update Info </p>
+    {%endif%}
 
     <ul class="list-group list-group-flush" id="notes">
         <br />
