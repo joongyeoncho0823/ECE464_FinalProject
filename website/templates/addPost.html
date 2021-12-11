@@ -8,6 +8,10 @@
         <textarea name="title" id="title" class="form-control"></textarea>
         <p align="center">Content</p>
         <textarea name="note" id="note" class="form-control"></textarea>
+        <br><br><p align="center">Choose one of the following discussions</p>
+        {% for discussion in user.discussions%}
+            <a href=""><p align="center">{{discussion.name}}</p></a>
+        {% endfor %}
         <br />
         <div style="width:800px; margin:0 auto;">
             <button type="submit" class="btn btn-primary">Add Note</button>
@@ -15,3 +19,5 @@
     </form>
 </div>
 {%endblock%}
+
+<!-- all groups / specific group -->
