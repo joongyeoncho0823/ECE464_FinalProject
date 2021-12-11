@@ -9,9 +9,11 @@
         <p align="center">Content</p>
         <textarea name="note" id="note" class="form-control"></textarea>
         <br><br><p align="center">Choose one of the following discussions</p>
-        {% for discussion in user.discussions%}
-            <a href=""><p align="center">{{discussion.name}}</p></a>
-        {% endfor %}
+        <select name="discussion_select" class="selectpicker form-control">
+            {% for discussion in user.discussions%}
+            <option value="{{discussion.name}}">{{discussion.name}}</option>
+            {% endfor %}
+        </select>
         <br />
         <div style="width:800px; margin:0 auto;">
             <button type="submit" class="btn btn-primary">Add Note</button>

@@ -10,7 +10,7 @@ class Note(db.Model):
     data = db.Column(db.String(10000), nullable=False)
     date = db.Column(db.DateTime(timezone=True), default=func.now())
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    # discussion_id = db.Column(db.Integer, db.ForeignKey('discussion.id'))
+    discussion_id = db.Column(db.Integer, db.ForeignKey('discussion.id'))
 
 
 user_discussion = db.Table('user_discussion', db.Column('user_id', db.Integer, db.ForeignKey(
@@ -22,7 +22,8 @@ class User(db.Model, UserMixin):
     email = db.Column(db.String(150), unique=True)
     password = db.Column(db.String(150))
     first_name = db.Column(db.String(150))
-    notes = db.relationship('Note', backref='author', lazy=True)
+    notes = db.relationship('Note', backref='author',
+                            lazy=True)  # redunant/can query from discussions
     discussions = db.relationship(
         'Discussion', secondary=user_discussion, backref=db.backref('members', lazy='dynamic'))
 
@@ -40,5 +41,5 @@ class Discussion(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50))
     # participants = db.relationship('User', secondary='UserDiscussion')
-    # posts = db.relationship('Note', backref='group', lazy=True)
+    posts = db.relationship('Note', backref='group', lazy=True)
     # password = db.Column(db.String(150))
