@@ -75,7 +75,7 @@ def discussion(discussion_id):
 @views.route('/addGroup', methods=['GET', 'POST'])
 @login_required
 def addGroup():
-    if request.method == 'POST':
+    if request.method == 'POST':  # if it is add
         name = request.form.get('groupName')
         newGroup = Discussion(name=name)
         user = current_user
@@ -84,5 +84,22 @@ def addGroup():
         db.session.commit()
         flash('Group Created!', category='success')
         return redirect(url_for('views.home'))
+    discussions = Discussion.query.all()
+    return render_template("join.html", discussions=discussions, user=current_user)
 
-    return render_template("join.html", user=current_user)
+
+@views.route('/joinGroup', methods=['POST'])
+@login_required
+def joinGroup():
+    if request.method == 'POST':  # if it is add
+        group_name = request.form.get('discussion_join')
+        group = Discussion.query.filter_by(name=group_name).first()
+        user = current_user
+        user.discussions.append(group)
+        db.session.commit()
+        flash('Group joined!', category='success')
+        discussions = Discussion.query.all()
+
+        return redirect(url_for('views.home'))
+    discussions = Discussion.query.all()
+    return render_template("join.html", discussions=discussions, user=current_user)
