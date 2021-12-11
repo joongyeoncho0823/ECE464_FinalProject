@@ -43,11 +43,14 @@ def add():
     if request.method == 'POST':
         note = request.form.get('note')
         title = request.form.get('title')
-        # title = request.form.get('title')
+        discussion = request.form.get('discussion_select')
         if len(note) < 1:
             flash('Post is too short!', category='error')
         else:
+            discussion_choice = Discussion.query.filter_by(
+                name=discussion).first()  # groups should be able to have the same name..
             new_note = Note(title=title, data=note, user_id=current_user.id)
+            discussion_choice.posts.append(new_note)
             db.session.add(new_note)
             db.session.commit()
             flash('Posted!', category='success')
@@ -60,6 +63,13 @@ def add():
 @login_required
 def discussion_page():
     return render_template("discussions.html", user=current_user)
+
+
+@views.route('/discussion/<int:discussion_id>')
+@login_required
+def discussion(discussion_id):
+    discussion = Discussion.query.filter_by(id=discussion_id).first()
+    return render_template("discussion.html", discussion=discussion, user=current_user)
 
 
 @views.route('/addGroup', methods=['GET', 'POST'])

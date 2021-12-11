@@ -6,19 +6,20 @@
 </a>
 <ul class="list-group list-group-flush" id="notes">
   {% for discussion in user.discussions%}
-  <p>{{discussion.name}}</p>
-  {%endfor%}
-  {% for note in user.notes %}
+  {% for note in discussion.posts%}
     <div class="card" style="width: 80rem;">
       <div class="card-body">
-        <h5 align="center" class="card-title"><a href="{{url_for('profile.viewProfile', user_id = note.author.id)}}">{{note.author.first_name}}</a> -> {{user.discussions}}</h5>
+        <h5 align="center" class="card-title"><a href="{{url_for('profile.viewProfile', user_id = note.author.id)}}">{{note.author.first_name}}</a> -> {{discussion.name}}</h5>
         <h6 align= "center" class="card-title">{{note.title}}:  <span>{{note.date}}</span></h6>
         <p class="card-text">{{ note.data }}</p>
+        {%if note.user_id == user.id%}
         <button type="button" class="close" onClick="deleteNote({{ note.id }})">
           <span aria-hidden="true">&times;</span>
         </button>
+        {%endif%}
       </div>
     </div>
   {% endfor %}
+  {%endfor%}
 </ul>
 {% endblock %}

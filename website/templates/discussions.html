@@ -4,10 +4,16 @@
 
 
 
-{% for note in user.notes%}
-{{user.discussions}}
-{{note.data}}
+{% for discussion in user.discussions%}
+
+<a href="{{url_for('views.discussion', discussion_id = discussion.id)}}">
+    <div align="center" class="card" style="width: 50rem;">
+        <div class="card-body">
+            <h3 align="center" class="card-title">{{discussion.name}}</h5>
+        </div>
+    </div>
 <br><br>
+</a>
 {%endfor%}
 
 {% endblock %}
