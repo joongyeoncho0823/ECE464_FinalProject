@@ -13,6 +13,16 @@
     <button type="submit" class="btn btn-primary">Submit</button>
 </form>
 </div>
+<h3>Join a Group</h3>
+<form method = "POST" action="/joinGroup">
+    <select name="discussion_join" class="selectpicker form-control">
+        {% for discussion in discussions%}
+        <option value="{{discussion.name}}">{{discussion.name}}</option>
+        {% endfor %}
+    </select>
+        <button type="submit" class="btn btn-primary">Join Group</button>
+</form>
+
 
 {% endblock %}
 
