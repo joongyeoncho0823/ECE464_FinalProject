@@ -59,6 +59,8 @@ def add():
 @views.route('/discussion_page')
 @login_required
 def discussion_page():
+    user = current_user
+
     return render_template("discussions.html", user=current_user)
 
 
@@ -106,7 +108,12 @@ def joinGroup():
     return render_template("join.html", discussions=discussions, user=current_user)
 
 
-@views.route('/leaveGroup', methods=['GET', 'POST'])
+@views.route('/leaveGroup/<int:discussion_id>', methods=['GET', 'POST'])
 @login_required
-def leaveGroup():
-    pass
+def leaveGroup(discussion_id):
+    discussion = Discussion.query.filter_by(id=discussion_id).first()
+    user = current_user
+    flash('Left group', category='success')
+    user.discussions.remove(discussion)
+    db.session.commit()
+    return redirect(url_for('views.home'))

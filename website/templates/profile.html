@@ -15,8 +15,14 @@
         <h3>Recent Posts</h3>
         {% for note in user.notes %}
         <div class="card-body">
+            <div class = "text-capitalize">
+                <div class = "font-weight-bold">
+                    {{note.title}}
+                </div>
+                {{note.date}}
+            </div>
             <br>
-            {{ note.data }} > {{note.date}}
+            {{ note.data }}
             <button type="button" class="close" onClick="deleteNote( {{ note.id }} )">
                 <span aria-hidden="true">&times;</span>
             </button>
@@ -27,8 +33,13 @@
         {% for discussion in user.discussions %}
         <li class="list-group-item">
             {{discussion.name}}
+            <button type="button" class="close" action="{{url_for('views.leaveGroup', discussion_id=discussion.id) }}">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            <h5 align="center"><a href="{{url_for('views.leaveGroup', discussion_id=discussion.id) }}">Leave Group</a></h5>
         </li>
         {% endfor %}
+        
     </ul>
 </form>
 {% endblock %}
