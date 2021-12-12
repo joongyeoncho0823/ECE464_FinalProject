@@ -5,7 +5,7 @@
   <button class="btn btn-primary">Add Post</button>
 </a>
 <ul class="list-group list-group-flush" id="notes">
-  {% for discussion in user.discussions%}
+  {% for discussion in current_user.discussions%}
   {% for note in discussion.posts%}
     <div class="card" style="width: 80rem;">
       <div class="card-body">
