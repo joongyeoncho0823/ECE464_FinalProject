@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify
 from flask_login import login_required, current_user
+from sqlalchemy.exc import IntegrityError
 from .models import Note, Discussion
 from .db_config import db
 import json
@@ -10,18 +11,14 @@ views = Blueprint('views', __name__)
 @views.route('/', methods=['GET', 'POST'])
 @login_required
 def home():
-    # if request.method == 'POST':
-    #     note = request.form.get('note')
-
-    #     if len(note) < 1:
-    #         flash('Note is too short!', category='error')
-    #     else:
-    #         new_note = Note(data=note, user_id=current_user.id)
-    #         db.session.add(new_note)
-    #         db.session.commit()
-    #         flash('Posted!', category='success')
-
     return render_template("home.html", user=current_user)
+
+
+# @views.route('/home_post_sorted/<int:sort>/<int:order>', methods=['GET', 'POST'])
+# @login_required
+# def home_post_sorted(sort, order):
+
+#     return render_template("discussions.html", user=current_user)
 
 
 @views.route('/delete-note', methods=['POST'])
@@ -69,6 +66,7 @@ def discussion_page():
 @login_required
 def discussion(discussion_id):
     discussion = Discussion.query.filter_by(id=discussion_id).first()
+
     return render_template("discussion.html", discussion=discussion, user=current_user)
 
 
@@ -95,11 +93,20 @@ def joinGroup():
         group_name = request.form.get('discussion_join')
         group = Discussion.query.filter_by(name=group_name).first()
         user = current_user
-        user.discussions.append(group)
-        db.session.commit()
-        flash('Group joined!', category='success')
-        discussions = Discussion.query.all()
-
-        return redirect(url_for('views.home'))
+        try:
+            user.discussions.append(group)
+            db.session.commit()
+            flash('Group joined!', category='success')
+            return redirect(url_for('views.home'))
+        except IntegrityError:
+            db.session.rollback()
+            flash('You are already a member of this group!', category='error')
+            return redirect(url_for('views.home'))
     discussions = Discussion.query.all()
     return render_template("join.html", discussions=discussions, user=current_user)
+
+
+@views.route('/leaveGroup', methods=['GET', 'POST'])
+@login_required
+def leaveGroup():
+    pass

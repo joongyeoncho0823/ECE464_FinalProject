@@ -9,15 +9,18 @@ class Note(db.Model):
     title = db.Column(db.String(100), nullable=False)
     data = db.Column(db.String(10000), nullable=False)
     date = db.Column(db.DateTime(timezone=True), default=func.now())
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    discussion_id = db.Column(db.Integer, db.ForeignKey('discussion.id'))
+    user_id = db.Column(db.Integer, db.ForeignKey(
+        'user.id', ondelete='CASCADE'))
+    discussion_id = db.Column(db.Integer, db.ForeignKey(
+        'discussion.id', ondelete='CASCADE'))
 
 
 user_discussion = db.Table('user_discussion', db.Column('user_id', db.Integer, db.ForeignKey(
-    'user.id', ondelete='CASCADE')), db.Column('discussion_id', db.Integer, db.ForeignKey('discussion.id', ondelete='CASCADE')))
+    'user.id', ondelete='CASCADE')), db.Column('discussion_id', db.Integer, db.ForeignKey('discussion.id', ondelete='CASCADE')), db.UniqueConstraint('user_id', 'discussion_id'))
 
 
 class User(db.Model, UserMixin):
+    __tablename__ = 'user'
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(150), unique=True)
     password = db.Column(db.String(150))
@@ -28,18 +31,8 @@ class User(db.Model, UserMixin):
         'Discussion', secondary=user_discussion, backref=db.backref('members', lazy='dynamic'))
 
 
-class UserDiscussion(db.Model):
-    __tablename__ = 'UserDiscussion'
-    id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey(
-        'user.id', ondelete='CASCADE'))
-    discussion_id = db.Column(
-        db.Integer, db.ForeignKey('discussion.id', ondelete='CASCADE'))
-
-
 class Discussion(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50))
-    # participants = db.relationship('User', secondary='UserDiscussion')
     posts = db.relationship('Note', backref='group', lazy=True)
     # password = db.Column(db.String(150))
