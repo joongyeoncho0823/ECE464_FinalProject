@@ -11,7 +11,7 @@ profile = Blueprint('profile', __name__)
 def viewProfile(user_id):
     user = User.query.filter_by(id=user_id).first()
     notes = db.session.execute(
-        "SELECT * FROM Note,User WHERE Note.user_id == User.id ORDER BY Note.date DESC")
+        "SELECT * FROM Note INNER JOIN User ON Note.user_id == User.id AND user_id == user.id ORDER BY Note.date DESC LIMIT 4")
     return render_template("profile.html", notes=notes, user=user)
 
 

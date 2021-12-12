@@ -14,6 +14,8 @@
         <br/>
         <h3>Recent Posts</h3>
         {% for note in notes %}
+        {%if note.user_id == user.id %}
+
         <div class="card-body">
             <div class = "text-capitalize">
                 <div class = "font-weight-bold">
@@ -23,20 +25,22 @@
             </div>
             <br>
             {{ note.data }}
+            {%if user.id == current_user.id%}
             <button type="button" class="close" onClick="deleteNote( {{ note.id }} )">
                 <span aria-hidden="true">&times;</span>
             </button>
+            {%endif%}
         </div>
+        {% endif %}
         {% endfor %}
         <br/>
         <h3>Discussions</h3>
         {% for discussion in user.discussions %}
         <li class="list-group-item">
             {{discussion.name}}
-            <button type="button" class="close" action="{{url_for('views.leaveGroup', discussion_id=discussion.id) }}">
-                <span aria-hidden="true">&times;</span>
-            </button>
+            {%if user.id == current_user.id%}
             <h5 align="center"><a href="{{url_for('views.leaveGroup', discussion_id=discussion.id) }}">Leave Group</a></h5>
+            {%endif%}
         </li>
         {% endfor %}
         
