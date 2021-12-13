@@ -8,7 +8,7 @@
         <p align = "center">Title</p> 
         <textarea name="title" id="title" class="form-control"></textarea>
         <p align="center">Content</p>
-        <textarea name="note" id="note" class="form-control"></textarea>
+        <textarea name="post" id="post" class="form-control"></textarea>
         <br><br><p align="center">Choose one of the following discussions</p>
         <select name="discussion_select" class="selectpicker form-control">
             {% for discussion in user.discussions%}
@@ -17,7 +17,7 @@
         </select>
         <br />
         <div style="width:800px; margin:0 auto;">
-            <button type="submit" class="btn btn-primary">Add Note</button>
+            <button type="submit" class="btn btn-primary">Add Post</button>
         </div>
     </form>
 </div>

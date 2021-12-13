@@ -4,7 +4,7 @@ from sqlalchemy.sql import func
 from sqlalchemy import *
 
 
-class Note(db.Model):
+class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100), nullable=False)
     data = db.Column(db.String(10000), nullable=False)
@@ -13,7 +13,7 @@ class Note(db.Model):
         'user.id', ondelete='CASCADE'))
     discussion_id = db.Column(db.Integer, db.ForeignKey(
         'discussion.id', ondelete='CASCADE'))
-    comments = db.relationship('Comment', backref='note', lazy=True)
+    comments = db.relationship('Comment', backref='post', lazy=True)
 
 
 class Comment(db.Model):
@@ -22,8 +22,8 @@ class Comment(db.Model):
     date = db.Column(db.DateTime(timezone=True), default=func.now())
     user_id = db.Column(db.Integer, db.ForeignKey(
         'user.id', ondelete='CASCADE'))
-    note_id = db.Column(db.Integer, db.ForeignKey(
-        'note.id', ondelete='CASCADE'))
+    post_id = db.Column(db.Integer, db.ForeignKey(
+        'post.id', ondelete='CASCADE'))
 
 
 user_discussion = db.Table('user_discussion', db.Column('user_id', db.Integer, db.ForeignKey(
@@ -36,7 +36,7 @@ class User(db.Model, UserMixin):
     email = db.Column(db.String(150), unique=True)
     password = db.Column(db.String(150))
     first_name = db.Column(db.String(150))
-    notes = db.relationship('Note', backref='author', lazy='dynamic')
+    posts = db.relationship('Post', backref='author', lazy='dynamic')
     discussions = db.relationship(
         'Discussion', secondary=user_discussion, backref=db.backref('members', lazy='dynamic'))
 
@@ -44,7 +44,7 @@ class User(db.Model, UserMixin):
 class Discussion(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50))
-    posts = db.relationship('Note', backref='group', lazy=True)
+    posts = db.relationship('Post', backref='group', lazy=True)
     # password = db.Column(db.String(150))
 
 

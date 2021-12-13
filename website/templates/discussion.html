@@ -1,17 +1,17 @@
 {% extends "base.html" %} {% block title %}{{discussion.name}}{% endblock %} {% block content
 %}
-<ul class="list-group list-group-flush" id="notes">
+<ul class="list-group list-group-flush" id="posts">
     {% if discussion.posts%}
-    {% for note in discussion.posts %}
+    {% for post in discussion.posts %}
     <div class="card" style="width: 80rem;">
         <div class="card-body">
             <h5 align="center" class="card-title"><a
-                    href="{{url_for('profile.viewProfile', user_id = note.author.id)}}">{{note.author.first_name}}</a>
+                    href="{{url_for('profile.viewProfile', user_id = post.author.id)}}">{{post.author.first_name}}</a>
                 -> {{discussion.name}}</h5>
-            <h6 align="center" class="card-title">{{note.title}}: <span>{{note.date}}</span></h6>
-            <p class="card-text">{{ note.data }}</p>
-            {%if note.user_id == current_user.id %}
-            <button type="button" class="close" onClick="deleteNote({{ note.id }})">
+            <h6 align="center" class="card-title">{{post.title}}: <span>{{post.date}}</span></h6>
+            <p class="card-text">{{ post.data }}</p>
+            {%if post.user_id == current_user.id %}
+            <button type="button" class="close" onClick="deletePost({{ post.id }})">
                 <span aria-hidden="true">&times;</span>
             </button>
             {%endif%}

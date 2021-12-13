@@ -10,23 +10,23 @@
     </a>
     {%endif%}
 
-    <ul class="list-group list-group-flush" id="notes">
+    <ul class="list-group list-group-flush" id="posts">
         <br/>
         <h3>Recent Posts</h3>
-        {% for note in notes %}
-        {%if note.user_id == user.id %}
+        {% for post in posts %}
+        {%if post.user_id == user.id %}
 
         <div class="card-body">
             <div class = "text-capitalize">
                 <div class = "font-weight-bold">
-                    {{note.title}}
+                    {{post.title}}
                 </div>
-                {{note.date}}
+                {{post.date}}
             </div>
             <br>
-            {{ note.data }}
+            {{ post.data }}
             {%if user.id == current_user.id%}
-            <button type="button" class="close" onClick="deleteNote( {{ note.id }} )">
+            <button type="button" class="close" onClick="deletePost( {{ post.id }} )">
                 <span aria-hidden="true">&times;</span>
             </button>
             {%endif%}

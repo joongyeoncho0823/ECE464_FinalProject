@@ -9,26 +9,26 @@
     <p class="profile__heading">Update Info </p>
     {%endif%}
 
-    <ul class="list-group list-group-flush" id="notes">
+    <ul class="list-group list-group-flush" id="posts">
         <br />
         <h3>Recent Posts</h3>
-        {% for note in user.notes %}
+        {% for post in user.posts %}
         <div class="card-body">
             ---Discussion_Name---
             <br>
-            {{ note.data }}
-            <button type="button" class="close" onClick="deleteNote( {{ note.id }} )">
+            {{ post.data }}
+            <button type="button" class="close" onClick="deletePost( {{ post.id }} )">
                 <span aria-hidden="true">&times;</span>
             </button>
         </div>
         {% endfor %}
         <br />
         <h3>Discussions</h3>
-        {% for note in user.notes %}
+        {% for post in user.posts %}
         <li class="list-group-item">
             {{user.discussions.name}}
-            {{ note.data }}
-            <button type="button" class="close" onClick="deleteNote( {{ note.id }} )">
+            {{ post.data }}
+            <button type="button" class="close" onClick="deletePost( {{ post.id }} )">
                 <span aria-hidden="true">&times;</span>
             </button>
         </li>

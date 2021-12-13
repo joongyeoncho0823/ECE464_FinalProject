@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify
 from flask_login import login_required, current_user
 from sqlalchemy.exc import IntegrityError
-from .models import Note, Discussion, User
+from .models import Post, Discussion, User
 from .db_config import db
 import json
 
@@ -13,23 +13,23 @@ views = Blueprint('views', __name__)
 def home():
 
     # posts = db.session.execute(
-    #     "SELECT DISTINCT U.user_id, U.discussion_id FROM user_discussion U, Note N JOIN (SELECT * FROM Note N) ON N.discussion_id == U.discussion_id")
+    #     "SELECT DISTINCT U.user_id, U.discussion_id FROM user_discussion U, Post N JOIN (SELECT * FROM Post N) ON N.discussion_id == U.discussion_id")
     # posts = db.session.execute(
-    #     "SELECT DISTINCT Note.title, Note.data, Note.date, user_discussion.user_id, user_discussion.discussion_id, Discussion.name as discussion_name FROM Note JOIN user_discussion JOIN Discussion WHERE Note.discussion_id == user_discussion.discussion_id AND user_discussion.discussion_id == Discussion.id")
+    #     "SELECT DISTINCT Post.title, Post.data, Post.date, user_discussion.user_id, user_discussion.discussion_id, Discussion.name as discussion_name FROM Post JOIN user_discussion JOIN Discussion WHERE Post.discussion_id == user_discussion.discussion_id AND user_discussion.discussion_id == Discussion.id")
     # posts = db.session.execute(
-    #     "SELECT DISTINCT * FROM (Note LEFT OUTER JOIN user_discussion) JOIN Discussion JOIN USER WHERE Note.discussion_id == user_discussion.discussion_id AND user_discussion.discussion_id == Discussion.id AND User.id == Note.user_id ORDER BY Note.date DESC")
+    #     "SELECT DISTINCT * FROM (Post LEFT OUTER JOIN user_discussion) JOIN Discussion JOIN USER WHERE Post.discussion_id == user_discussion.discussion_id AND user_discussion.discussion_id == Discussion.id AND User.id == Post.user_id ORDER BY Post.date DESC")
     posts = db.session.execute(
-        "SELECT DISTINCT * FROM user_discussion,User,Note WHERE User.id == Note.user_id AND user_discussion.user_id == User.id AND user_discussion.discussion_id == Note.discussion_id ORDER BY Note.date DESC")
+        "SELECT DISTINCT * FROM user_discussion,User,Post WHERE User.id == Post.user_id AND user_discussion.user_id == User.id AND user_discussion.discussion_id == Post.discussion_id AND true ORDER BY Post.date DESC")
     # posts = db.session.execute(
     #     "SELECT DISTINCT * FROM Discussion, user_discussion,User WHERE user_disccusion.discussion_id == Discussion.id AND User.id == user_discussion.user_id")
     this_discussion = Discussion.query.filter_by(id=1).first()
     # posts = db.session.query(
-    #     Note.author, Note.id, Note.data).filter(Note.id == 1).first()
+    #     Post.author, Post.id, Post.data).filter(Post.id == 1).first()
     #
 
     # db.session.execute(
-    #     "SELECT * FROM Note INNER JOIN User ON Note.user_id == User.id AND user_id == user.id ORDER BY Note.date DESC LIMIT 4")
-    # posts = Note.query.filter()
+    #     "SELECT * FROM Post INNER JOIN User ON Post.user_id == User.id AND user_id == user.id ORDER BY Post.date DESC LIMIT 4")
+    # posts = Post.query.filter()
     return render_template("home.html", posts=posts, this_discussion=this_discussion, user=current_user)
 
 # @views.route('/home_post_sorted/<int:sort>/<int:order>', methods=['GET', 'POST'])
@@ -39,14 +39,14 @@ def home():
 #     return render_template("discussions.html", user=current_user)
 
 
-@ views.route('/delete-note', methods=['POST'])
-def delete_note():
-    note = json.loads(request.data)
-    noteId = note['noteId']
-    note = Note.query.get(noteId)
-    if note:
-        if note.user_id == current_user.id:
-            db.session.delete(note)
+@ views.route('/delete-post', methods=['POST'])
+def delete_post():
+    post = json.loads(request.data)
+    postId = post['postId']
+    post = Post.query.get(postId)
+    if post:
+        if post.user_id == current_user.id:
+            db.session.delete(post)
             db.session.commit()
 
     return jsonify({})
@@ -56,18 +56,18 @@ def delete_note():
 @ login_required
 def add():
     if request.method == 'POST':
-        note = request.form.get('note')
+        post = request.form.get('post')
         title = request.form.get('title')
         discussion = request.form.get('discussion_select')
-        if len(note) < 1:
+        if len(post) < 1:
             flash('Post is too short!', category='error')
         else:
             discussion_choice = Discussion.query.filter_by(
                 name=discussion).first()  # groups should be able to have the same name..
-            new_note = Note(title=title, data=note,
+            new_post = Post(title=title, data=post,
                             user_id=current_user.id)
-            discussion_choice.posts.append(new_note)
-            db.session.add(new_note)
+            discussion_choice.posts.append(new_post)
+            db.session.add(new_post)
             db.session.commit()
             flash('Posted!', category='success')
             return redirect(url_for('views.home'))

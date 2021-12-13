@@ -5,22 +5,22 @@
   <button class="btn btn-primary">Add Post</button>
 </a>
 <br>
-{%for note in this_discussion.posts%}
+{%for post in this_discussion.posts%}
 {{this_discussion.id}}
 {%endfor%}
-<ul class="list-group list-group-flush" id="notes">
-  {%for note in posts%}
-  {{note}}
+<ul class="list-group list-group-flush" id="posts">
+  {%for post in posts%}
+  {{post}}
     <div class="card" style="width: 80rem;">
       <div class="card-body">
         <h5>
-          {{note.discussion_name}}</h5>
-          <h5 align="center" class="card-title"><a href="{{url_for('profile.viewProfile', user_id = note.user_id)}}">{{note.first_name}}</a> ->
-            {{note.discussion_name}}</h5>
-        <h6 align= "center" class="card-title">{{note.title}}:  <span>{{note.date}}</span></h6>
-        <p class="card-text">{{ note.data }}</p>
-        {%if note.user_id == user.id%}
-        <button type="button" class="close" onClick="deleteNote({{ note.id }})">
+          {{post.discussion_name}}</h5>
+          <h5 align="center" class="card-title"><a href="{{url_for('profile.viewProfile', user_id = post.user_id)}}">{{post.first_name}}</a> ->
+            {{post.discussion_name}}</h5>
+        <h6 align= "center" class="card-title">{{post.title}}:  <span>{{post.date}}</span></h6>
+        <p class="card-text">{{ post.data }}</p>
+        {%if post.user_id == user.id%}
+        <button type="button" class="close" onClick="deletePost({{ post.id }})">
           <span aria-hidden="true">&times;</span>
         </button>
         {%endif%}
