@@ -36,7 +36,7 @@ class User(db.Model, UserMixin):
     email = db.Column(db.String(150), unique=True)
     password = db.Column(db.String(150))
     first_name = db.Column(db.String(150))
-    notes = db.relationship('Note', backref='author', lazy=True)
+    notes = db.relationship('Note', backref='author', lazy='dynamic')
     discussions = db.relationship(
         'Discussion', secondary=user_discussion, backref=db.backref('members', lazy='dynamic'))
 
@@ -49,8 +49,12 @@ class Discussion(db.Model):
 
 
 class Role(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey(
+        'user.id', ondelete='CASCADE'), primary_key=True)
+    discussion_id = db.Column(db.Integer, db.ForeignKey(
+        'discussion.id', ondelete='CASCADE'), primary_key=True)
     name = db.Column(db.String(20))
+    db.UniqueConstraint('user_id', 'discussion_id')
 
 
 # class UserRoles(db.Model):
