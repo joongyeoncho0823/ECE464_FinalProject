@@ -1,8 +1,10 @@
 {% extends "base.html" %} {% block title %}{{discussion.discussion_name}}{% endblock %} {% block content
 %}
+
+<br>
 <ul class="list-group list-group-flush" id="notes">
     {% if discussion.posts%}
-    {% for note in discussion.posts %}
+    {% for note in posts %}
     <div class="card" style="width: 80rem;">
         <div class="card-body">
             <h5 align="center" class="card-title"><a

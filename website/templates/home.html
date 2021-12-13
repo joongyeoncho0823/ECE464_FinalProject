@@ -4,14 +4,14 @@
 <a href="/add">
   <button class="btn btn-primary">Add Post</button>
 </a>
-<br>
+<br><br>
+
 <ul class="list-group list-group-flush" id="notes">
   {%for note in posts%}
-  {{note}}
+  {%for some_discussion in user.discussions%}
+  {% if note.discussion_id == some_discussion.id%}
     <div class="card" style="width: 80rem;">
       <div class="card-body">
-        <h5>
-          {{note.discussion_name}}</h5>
           <h5 align="center" class="card-title"><a href="{{url_for('profile.viewProfile', user_id = note.user_id)}}">{{note.first_name}}</a> ->
             {{note.discussion_name}}</h5>
         <h6 align= "center" class="card-title">{{note.title}}:  <span>{{note.date}}</span></h6>
@@ -22,7 +22,8 @@
         </button>
         {%endif%}
       </div>
-    </div>
+  {%endif%}
+  {%endfor%}
   {%endfor%}
 </ul>
 {% endblock %}

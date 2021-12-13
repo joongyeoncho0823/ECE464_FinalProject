@@ -1,9 +1,10 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify
 from flask_login import login_required, current_user
 from sqlalchemy.exc import IntegrityError
-from .models import Note, Discussion, User
+from .models import Note, Discussion, User, user_discussion
 from .db_config import db
 import json
+import re
 
 views = Blueprint('views', __name__)
 
@@ -12,33 +13,23 @@ views = Blueprint('views', __name__)
 @login_required
 def home():
 
-    # posts = db.session.execute(
-    #     "SELECT DISTINCT U.user_id, U.discussion_id FROM user_discussion U, Note N JOIN (SELECT * FROM Note N) ON N.discussion_id == U.discussion_id")
-    # posts = db.session.execute(
-    #     "SELECT DISTINCT Note.title, Note.data, Note.date, user_discussion.user_id, user_discussion.discussion_id, Discussion.name as discussion_name FROM Note JOIN user_discussion JOIN Discussion WHERE Note.discussion_id == user_discussion.discussion_id AND user_discussion.discussion_id == Discussion.id")
-    # posts = db.session.execute(
-    #     "SELECT DISTINCT * FROM (Note LEFT OUTER JOIN user_discussion) JOIN Discussion JOIN USER WHERE Note.discussion_id == user_discussion.discussion_id AND user_discussion.discussion_id == Discussion.id AND User.id == Note.user_id ORDER BY Note.date DESC")
-    # posts = db.session.execute(
-    #     "SELECT DISTINCT * FROM user_discussion,User,Note,Discussion WHERE User.id == Note.user_id AND user_discussion.user_id == User.id AND user_discussion.discussion_id == Note.discussion_id AND user_discussion.discussion_id == Discussion.id ORDER BY Note.date DESC")
+    userz = User.query.filter_by(id=current_user.id).first()
 
     # posts = db.session.execute(
-    #     "SELECT DISTINCT * FROM Note,Discussion WHERE Note.discussion_id == Discussion.id AND Note.user_id IN (SELECT user_id from user_discussion WHERE user_id == 1)")
-    user = User.query.filter_by(id=current_user.id).first()
+    #     "SELECT DISTINCT * FROM Note JOIN User JOIN Discussion JOIN user_discussion ON (user_discussion.user_id == 2) AND (user_discussion.discussion_id = Discussion.id) AND Note.discussion_id == Discussion.id AND Note.user_id == 2 ORDER BY Note.date DESC")
+    users = User.query.all()
+    all_discussions = Discussion.query.all()
+    all_notes = Note.query.all()
+    current_user_id = current_user.id
     posts = db.session.execute(
-        "SELECT DISTINCT * FROM Note, User, Discussion, user_discussion WHERE (user_discussion.user_id == user.id) AND (user_discussion.discussion_id = Discussion.id) AND Note.discussion_id == user_discussion.discussion_id AND Note.user_id == user.id ORDER BY Note.date DESC")
+        "SELECT DISTINCT * FROM Note, User, user_discussion, Discussion WHERE user_discussion.user_id == Note.user_id AND Note.discussion_id == Discussion.id AND user_discussion.user_id == User.id AND Note.discussion_id == user_discussion.discussion_id ORDER BY Note.date DESC")
     # from the discussions where (current_user in discussion), get all the notes, ordered by notes
     #
     # posts = db.session.execute(
     #     "SELECT DISTINCT * FROM Discussion, user_discussion,User WHERE user_disccusion.discussion_id == Discussion.id AND User.id == user_discussion.user_id")
     this_discussion = Discussion.query.filter_by(id=1).first()
-    # posts = db.session.query(
-    #     Note.author, Note.id, Note.data).filter(Note.id == 1).first()
-    #
 
-    # db.session.execute(
-    #     "SELECT * FROM Note INNER JOIN User ON Note.user_id == User.id AND user_id == user.id ORDER BY Note.date DESC LIMIT 4")
-    # posts = Note.query.filter()
-    return render_template("home.html", posts=posts, this_discussion=this_discussion, user=current_user)
+    return render_template("home.html", user_discussion=user_discussion, posts=posts, all_discussions=all_discussions, all_notes=all_notes, users=users, this_discussion=this_discussion, user=current_user)
 
 # @views.route('/home_post_sorted/<int:sort>/<int:order>', methods=['GET', 'POST'])
 # @login_required
@@ -95,8 +86,10 @@ def discussion_page():
 @ login_required
 def discussion(discussion_id):
     discussion = Discussion.query.filter_by(id=discussion_id).first()
+    posts = Note.query.filter_by(
+        discussion_id=discussion_id).order_by(Note.date.desc())
 
-    return render_template("discussion.html", discussion=discussion, user=current_user)
+    return render_template("discussion.html", posts=posts, discussion=discussion, user=current_user)
 
 
 @ views.route('/addGroup', methods=['GET', 'POST'])

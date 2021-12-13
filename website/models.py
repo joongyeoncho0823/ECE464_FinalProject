@@ -38,7 +38,7 @@ class User(db.Model, UserMixin):
     first_name = db.Column(db.String(150))
     notes = db.relationship('Note', backref='author', lazy='dynamic')
     discussions = db.relationship(
-        'Discussion', secondary=user_discussion, backref=db.backref('members', lazy='dynamic'))
+        'Discussion', secondary=user_discussion, backref=db.backref('members'), lazy='dynamic')
 
 
 class Discussion(db.Model):
