@@ -18,8 +18,16 @@ def home():
     #     "SELECT DISTINCT Note.title, Note.data, Note.date, user_discussion.user_id, user_discussion.discussion_id, Discussion.name as discussion_name FROM Note JOIN user_discussion JOIN Discussion WHERE Note.discussion_id == user_discussion.discussion_id AND user_discussion.discussion_id == Discussion.id")
     # posts = db.session.execute(
     #     "SELECT DISTINCT * FROM (Note LEFT OUTER JOIN user_discussion) JOIN Discussion JOIN USER WHERE Note.discussion_id == user_discussion.discussion_id AND user_discussion.discussion_id == Discussion.id AND User.id == Note.user_id ORDER BY Note.date DESC")
+    # posts = db.session.execute(
+    #     "SELECT DISTINCT * FROM user_discussion,User,Note,Discussion WHERE User.id == Note.user_id AND user_discussion.user_id == User.id AND user_discussion.discussion_id == Note.discussion_id AND user_discussion.discussion_id == Discussion.id ORDER BY Note.date DESC")
+
+    # posts = db.session.execute(
+    #     "SELECT DISTINCT * FROM Note,Discussion WHERE Note.discussion_id == Discussion.id AND Note.user_id IN (SELECT user_id from user_discussion WHERE user_id == 1)")
+    user = User.query.filter_by(id=current_user.id).first()
     posts = db.session.execute(
-        "SELECT DISTINCT * FROM user_discussion,User,Note,Discussion WHERE User.id == Note.user_id AND user_discussion.user_id == User.id AND user_discussion.discussion_id == Note.discussion_id AND user_discussion.discussion_id == Discussion.id ORDER BY Note.date DESC")
+        "SELECT DISTINCT * FROM Note, User, Discussion, user_discussion WHERE (user_discussion.user_id == user.id) AND (user_discussion.discussion_id = Discussion.id) AND Note.discussion_id == user_discussion.discussion_id AND Note.user_id == user.id ORDER BY Note.date DESC")
+    # from the discussions where (current_user in discussion), get all the notes, ordered by notes
+    #
     # posts = db.session.execute(
     #     "SELECT DISTINCT * FROM Discussion, user_discussion,User WHERE user_disccusion.discussion_id == Discussion.id AND User.id == user_discussion.user_id")
     this_discussion = Discussion.query.filter_by(id=1).first()
