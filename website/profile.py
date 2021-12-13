@@ -3,6 +3,7 @@ from flask_login import login_required, current_user
 from .models import Note, User
 from .db_config import db
 import json
+from werkzeug.security import generate_password_hash
 
 profile = Blueprint('profile', __name__)
 
@@ -20,6 +21,43 @@ def viewProfile(user_id):
 # def viewProfile():
 #     return render_template("profile.html", user=current_user)
 
-@profile.route('/updateProfile')
+@profile.route('/updateProfile', methods=['GET', 'POST'])
 def updateProfile():
+    if request.method == 'POST':
+        email = request.form.get('email')
+        first_name = request.form.get('firstName')
+        password1 = request.form.get('password1')
+
+        bValid = True
+        
+        if email:
+
+            if len(email) < 4:
+                flash('Email must be greater than 3 characters.', category='error')
+                bValid = False
+            else:
+                current_user.email = email
+        if first_name:
+            if len(first_name) < 2:
+                flash('First name must be greater than 1 character.', category='error')
+                bValid = False
+            else:
+                current_user.first_name = first_name 
+        if password1:
+            if len(password1) < 7:
+                flash('Password must be at least 7 characters.', category='error')
+                bValid = False
+            else:
+                current_user.password = generate_password_hash(password1, method='sha256') 
+
+        try:
+            assert(bValid)
+            db.session.commit()
+            flash('Account Updated!', category='success')
+            return redirect(url_for('views.home'))
+        except:
+            db.session.rollback()
+            if bValid:
+                flash('Email already exists.', category='error')
+        
     return render_template("updateInfo.html", user=current_user)
