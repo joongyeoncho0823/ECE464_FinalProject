@@ -37,7 +37,7 @@
         <h3>Discussions</h3>
         {% for discussion in user.discussions %}
         <li class="list-group-item">
-            {{discussion.name}}
+            {{discussion.discussion_name}}
             {%if user.id == current_user.id%}
             <h5 align="center"><a href="{{url_for('views.leaveGroup', discussion_id=discussion.id) }}">Leave Group</a></h5>
             {%endif%}

@@ -43,7 +43,7 @@ class User(db.Model, UserMixin):
 
 class Discussion(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(50))
+    discussion_name = db.Column(db.String(50))
     posts = db.relationship('Note', backref='group', lazy=True)
     # password = db.Column(db.String(150))
 

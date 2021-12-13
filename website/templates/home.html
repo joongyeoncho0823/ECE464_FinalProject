@@ -5,9 +5,6 @@
   <button class="btn btn-primary">Add Post</button>
 </a>
 <br>
-{%for note in this_discussion.posts%}
-{{this_discussion.id}}
-{%endfor%}
 <ul class="list-group list-group-flush" id="notes">
   {%for note in posts%}
   {{note}}

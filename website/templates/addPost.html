@@ -12,7 +12,7 @@
         <br><br><p align="center">Choose one of the following discussions</p>
         <select name="discussion_select" class="selectpicker form-control">
             {% for discussion in user.discussions%}
-            <option value="{{discussion.name}}">{{discussion.name}}</option>
+            <option value="{{discussion.discussion_name}}">{{discussion.discussion_name}}</option>
             {% endfor %}
         </select>
         <br />

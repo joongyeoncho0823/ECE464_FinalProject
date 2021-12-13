@@ -19,7 +19,7 @@ def home():
     # posts = db.session.execute(
     #     "SELECT DISTINCT * FROM (Note LEFT OUTER JOIN user_discussion) JOIN Discussion JOIN USER WHERE Note.discussion_id == user_discussion.discussion_id AND user_discussion.discussion_id == Discussion.id AND User.id == Note.user_id ORDER BY Note.date DESC")
     posts = db.session.execute(
-        "SELECT DISTINCT * FROM user_discussion,User,Note WHERE User.id == Note.user_id AND user_discussion.user_id == User.id AND user_discussion.discussion_id == Note.discussion_id ORDER BY Note.date DESC")
+        "SELECT DISTINCT * FROM user_discussion,User,Note,Discussion WHERE User.id == Note.user_id AND user_discussion.user_id == User.id AND user_discussion.discussion_id == Note.discussion_id AND user_discussion.discussion_id == Discussion.id ORDER BY Note.date DESC")
     # posts = db.session.execute(
     #     "SELECT DISTINCT * FROM Discussion, user_discussion,User WHERE user_disccusion.discussion_id == Discussion.id AND User.id == user_discussion.user_id")
     this_discussion = Discussion.query.filter_by(id=1).first()
@@ -63,7 +63,7 @@ def add():
             flash('Post is too short!', category='error')
         else:
             discussion_choice = Discussion.query.filter_by(
-                name=discussion).first()  # groups should be able to have the same name..
+                discussion_name=discussion).first()  # groups should be able to have the same name..
             new_note = Note(title=title, data=note,
                             user_id=current_user.id)
             discussion_choice.posts.append(new_note)
@@ -96,7 +96,7 @@ def discussion(discussion_id):
 def addGroup():
     if request.method == 'POST':  # if it is add
         name = request.form.get('groupName')
-        newGroup = Discussion(name=name)
+        newGroup = Discussion(discussion_name=name)
         user = current_user
         user.discussions.append(newGroup)
         db.session.add(newGroup)
@@ -112,7 +112,7 @@ def addGroup():
 def joinGroup():
     if request.method == 'POST':  # if it is add
         group_name = request.form.get('discussion_join')
-        group = Discussion.query.filter_by(name=group_name).first()
+        group = Discussion.query.filter_by(discussion_name=group_name).first()
         user = current_user
         try:
             user.discussions.append(group)
