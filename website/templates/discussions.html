@@ -7,9 +7,9 @@
 {% for discussion in user.discussions%}
 
 <a href="{{url_for('views.discussion', discussion_id = discussion.id)}}">
-    <div align="center" class="card" style="width: 50rem;">
+    <div align="center" class="card" style="width: 65rem;">
         <div class="card-body">
-            <h3 align="center" class="card-title">{{discussion.name}}</h5>
+            <h3 align="center" class="card-title">{{discussion.discussion_name}}</h5>
         </div>
     </div>
 <br><br>

@@ -26,7 +26,7 @@
         <h3>Discussions</h3>
         {% for note in user.notes %}
         <li class="list-group-item">
-            {{user.discussions.name}}
+            {{user.discussions.discussion_name}}
             {{ note.data }}
             <button type="button" class="close" onClick="deleteNote( {{ note.id }} )">
                 <span aria-hidden="true">&times;</span>
