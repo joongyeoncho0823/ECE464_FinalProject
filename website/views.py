@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify
 from flask_login import login_required, current_user
 from sqlalchemy.exc import IntegrityError
-from .models import Note, Discussion, User, user_discussion
+from .models import Note, Discussion, User
 from .db_config import db
 import json
 import re
@@ -13,23 +13,10 @@ views = Blueprint('views', __name__)
 @login_required
 def home():
 
-    userz = User.query.filter_by(id=current_user.id).first()
-
-    # posts = db.session.execute(
-    #     "SELECT DISTINCT * FROM Note JOIN User JOIN Discussion JOIN user_discussion ON (user_discussion.user_id == 2) AND (user_discussion.discussion_id = Discussion.id) AND Note.discussion_id == Discussion.id AND Note.user_id == 2 ORDER BY Note.date DESC")
-    users = User.query.all()
-    all_discussions = Discussion.query.all()
-    all_notes = Note.query.all()
-    current_user_id = current_user.id
     posts = db.session.execute(
         "SELECT DISTINCT * FROM Note, User, user_discussion, Discussion WHERE user_discussion.user_id == Note.user_id AND Note.discussion_id == Discussion.id AND user_discussion.user_id == User.id AND Note.discussion_id == user_discussion.discussion_id ORDER BY Note.date DESC")
-    # from the discussions where (current_user in discussion), get all the notes, ordered by notes
-    #
-    # posts = db.session.execute(
-    #     "SELECT DISTINCT * FROM Discussion, user_discussion,User WHERE user_disccusion.discussion_id == Discussion.id AND User.id == user_discussion.user_id")
-    this_discussion = Discussion.query.filter_by(id=1).first()
 
-    return render_template("home.html", user_discussion=user_discussion, posts=posts, all_discussions=all_discussions, all_notes=all_notes, users=users, this_discussion=this_discussion, user=current_user)
+    return render_template("home.html", posts=posts,  user=current_user)
 
 # @views.route('/home_post_sorted/<int:sort>/<int:order>', methods=['GET', 'POST'])
 # @login_required
