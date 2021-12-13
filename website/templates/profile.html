@@ -13,22 +13,37 @@
     <ul class="list-group list-group-flush" id="notes">
         <br/>
         <h3>Recent Posts</h3>
-        {% for note in user.notes %}
+        {% for note in notes %}
+        {%if note.user_id == user.id %}
+
         <div class="card-body">
+            <div class = "text-capitalize">
+                <div class = "font-weight-bold">
+                    {{note.title}}
+                </div>
+                {{note.date}}
+            </div>
             <br>
-            {{ note.data }} > {{note.date}}
+            {{ note.data }}
+            {%if user.id == current_user.id%}
             <button type="button" class="close" onClick="deleteNote( {{ note.id }} )">
                 <span aria-hidden="true">&times;</span>
             </button>
+            {%endif%}
         </div>
+        {% endif %}
         {% endfor %}
         <br/>
         <h3>Discussions</h3>
         {% for discussion in user.discussions %}
         <li class="list-group-item">
             {{discussion.name}}
+            {%if user.id == current_user.id%}
+            <h5 align="center"><a href="{{url_for('views.leaveGroup', discussion_id=discussion.id) }}">Leave Group</a></h5>
+            {%endif%}
         </li>
         {% endfor %}
+        
     </ul>
 </form>
 {% endblock %}

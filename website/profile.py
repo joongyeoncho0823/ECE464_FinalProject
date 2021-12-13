@@ -10,7 +10,9 @@ profile = Blueprint('profile', __name__)
 @profile.route('/profile/<int:user_id>')
 def viewProfile(user_id):
     user = User.query.filter_by(id=user_id).first()
-    return render_template("profile.html", user=user)
+    notes = db.session.execute(
+        "SELECT * FROM Note INNER JOIN User ON Note.user_id == User.id AND user_id == user.id ORDER BY Note.date DESC LIMIT 4")
+    return render_template("profile.html", notes=notes, user=user)
 
 
 # @profile.route('/profile')

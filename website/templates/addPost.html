@@ -2,6 +2,7 @@
 
 {%block content%}
 
+{% if user.discussions%}
 <div class="d-flex p-5">
     <form method="POST" , action="/add">
         <p align = "center">Title</p> 
@@ -20,6 +21,10 @@
         </div>
     </form>
 </div>
+
+{%else%}
+<h3>You are currently not a member of any group. <a href="/addGroup">Join an existing group or create a group!</a></h3>
+{%endif%}
 {%endblock%}
 
 <!-- all groups / specific group -->
