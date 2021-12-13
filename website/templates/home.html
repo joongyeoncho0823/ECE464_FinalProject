@@ -6,6 +6,12 @@
 </a>
 <br><br>
 
+
+<select name="home_page_order" class="selectpicker form-control">
+  {% for discussion in user.discussions%}
+  <option value="{{discussion.discussion_name}}">{{discussion.discussion_name}}</option>
+  {% endfor %}
+</select>
 <ul class="list-group list-group-flush" id="notes">
   {%for note in posts%}
   {%for some_discussion in user.discussions%}

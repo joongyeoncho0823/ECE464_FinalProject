@@ -2,7 +2,7 @@
 
 {%block content%}
 
-{% if user.discussions%}
+{% if my_discussions %}
 <div class="d-flex p-5">
     <form method="POST" , action="/add">
         <p align = "center">Title</p> 
@@ -11,7 +11,7 @@
         <textarea name="note" id="note" class="form-control"></textarea>
         <br><br><p align="center">Choose one of the following discussions</p>
         <select name="discussion_select" class="selectpicker form-control">
-            {% for discussion in user.discussions%}
+            {% for discussion in my_discussions%}
             <option value="{{discussion.discussion_name}}">{{discussion.discussion_name}}</option>
             {% endfor %}
         </select>
