@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify
+from flask import Flask, Blueprint, render_template, request, redirect, url_for, flash, jsonify
 from flask_login import login_required, current_user
 from sqlalchemy.exc import IntegrityError
 from .models import Note, Discussion, User
@@ -6,7 +6,8 @@ from .db_config import db
 import json
 
 views = Blueprint('views', __name__)
-
+app = Flask(__name__)
+# I added this app thing because I need it in profile.py in order to get app.root_path inside save_picture()
 
 @views.route('/', methods=['GET', 'POST'])
 @login_required

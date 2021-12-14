@@ -1,7 +1,29 @@
 {% extends "base.html" %} {% block title %}{{user.first_name}}'s Profile{% endblock %} {% block content
 %}
-<form method="POST">
+<form method="POST" enctype="multipart/form-data">
     <br><br><h3 align="center">Profile</h3> <br/><br/>
+    <div class="content-section">
+        <div class="media">
+          <img class="rounded-circle account-img" src="{{image_file}}">
+        </div>
+        <!-- I spent an hour trying to find out what was wrong. Turns out you needed a csrf_token to validate -->
+        {{ form.csrf_token }}
+        <!-- Source: https://stackoverflow.com/a/36441047/16900678 -->
+        {%if user.id == current_user.id%}
+        <div class="form-group">
+            {{ form.picture.label() }}
+            {{ form.picture(class="form-control-file") }}
+            {% if form.picture.errors %}
+                {% for error in form.picture.errors %}
+                    <span class="text-danger">{{ error }}</span></br>
+                {% endfor %}
+            {% endif %}
+        </div>
+        <div class="form-group">
+            {{ form.submit(class="btn btn-outline-info") }}
+        </div>
+        {%endif%}
+      </div>
     <p class="profile__heading">Name: <span class="profile__heading-data">{{ user.first_name}}</span></p>
     <p class="profile__heading">Email: <span class="profile__heading-data">{{ user.email }}</span></p>
     {%if user.id == current_user.id%}

@@ -4,17 +4,40 @@ from .models import Note, User
 from .db_config import db
 import json
 from werkzeug.security import generate_password_hash
+from flask_wtf import FlaskForm
+from flask_wtf.file import FileField, FileAllowed
+from website.form import UpdateAccountForm
+
+import secrets
+import os
+from website.views import app
 
 profile = Blueprint('profile', __name__)
 
+# Save_picture code taken from: https://youtu.be/803Ei2Sq-Zs
+def save_picture(form_picture):
+    random_hex = secrets.token_hex(8)
+    _, f_ext = os.path.splitext(form_picture.filename)
+    picture_fn = random_hex + f_ext
+    picture_path = os.path.join(app.root_path, 'static/assets/profile_pictures', picture_fn)
+    form_picture.save(picture_path)
+    return picture_fn
 
-@profile.route('/profile/<int:user_id>')
+@profile.route('/profile/<int:user_id>', methods=['GET', 'POST'])
 def viewProfile(user_id):
+    form = UpdateAccountForm()
+    if form.validate_on_submit():
+        if form.picture.data:
+            picture_file = save_picture(form.picture.data)
+            current_user.profile_picture = picture_file
+            db.session.commit()
+        flash('Image Uploaded!', category='success')
+        return redirect("/")
     user = User.query.filter_by(id=user_id).first()
-    notes = Note.query.filter_by(
-        user_id=user_id).order_by(Note.date.desc()).limit(3).all()
-    # INNER JOIN User ON Note.user_id == User.id AND user_id == user.id ORDER BY Note.date DESC LIMIT 4
-    return render_template("profile.html", notes=notes, user=user)
+    notes = Note.query.filter_by(user_id=user_id).order_by(Note.date.desc()).limit(3).all()
+        # INNER JOIN User ON Note.user_id == User.id AND user_id == user.id ORDER BY Note.date DESC LIMIT 4
+    image_file = url_for('static', filename='assets/profile_pictures/' + current_user.profile_picture)
+    return render_template("profile.html", notes=notes, user=user, image_file=image_file, form=form)
 
 
 # @profile.route('/profile')

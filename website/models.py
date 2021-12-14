@@ -36,6 +36,7 @@ class User(db.Model, UserMixin):
     email = db.Column(db.String(150), unique=True)
     password = db.Column(db.String(150))
     first_name = db.Column(db.String(150))
+    profile_picture = db.Column(db.String(20), default='anonymous.png')
     notes = db.relationship('Note', backref='author', lazy='dynamic')
     discussions = db.relationship(
         'Discussion', secondary=user_discussion, backref=db.backref('members'), lazy='dynamic')
