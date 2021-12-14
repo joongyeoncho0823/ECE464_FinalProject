@@ -29,9 +29,12 @@
         <h6 align= "left" class="card-title">{{note.title}}:  <span>{{note.date}}</span></h6>
         <p class="card-text">{{ note.data }}</p>
         {%if note.user_id == user.id%}
-        <button type="button" class="close" onClick="deleteNote({{ note.id }})">
+        <button type="button" class="close" onClick="deleteNote({{ note.n_id }})">
           <span aria-hidden="true">&times;</span>
         </button>
+        <a href="{{url_for('views.edit', note_id=note.n_id)}}">
+          <button class="btn btn-primary">Edit Post</button>
+        </a>
         {%endif%}
       </div>
   {%endif%}

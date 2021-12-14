@@ -14,7 +14,7 @@ app = Flask(__name__)
 def home():
 
     posts = db.session.execute(
-        "SELECT DISTINCT * FROM Note, User, user_discussion, Discussion WHERE user_discussion.user_id == Note.user_id AND Note.discussion_id == Discussion.id AND user_discussion.user_id == User.id AND Note.discussion_id == user_discussion.discussion_id ORDER BY Note.date DESC")
+        "SELECT DISTINCT Note.id AS n_id,* FROM Note, User, user_discussion, Discussion WHERE user_discussion.user_id == Note.user_id AND Note.discussion_id == Discussion.id AND user_discussion.user_id == User.id AND Note.discussion_id == user_discussion.discussion_id ORDER BY Note.date DESC")
 
     return render_template("home.html", posts=posts,  user=current_user)
 
@@ -36,6 +36,34 @@ def delete_note():
             db.session.commit()
 
     return jsonify({})
+
+@ views.route('/edit/<int:note_id>', methods=['GET','POST'])
+@ login_required
+def edit(note_id):
+    editedNote = Note.query.get(note_id)
+    if request.method == 'POST':
+        note = request.form.get('note')
+        if len(note) > 1:
+            if editedNote.user_id == current_user.id:
+                editedNote.data = note
+                db.session.commit()
+                flash("Edited post succesfully!", category='success')
+                return redirect(url_for('views.home'))
+            else:
+                flash("You don't have permission to edit this!", category='error')
+                return redirect(url_for('views.home'))
+        else:
+            flash('Post is too short!', category='error')
+    # note = json.loads(request.data)
+    # noteId = note['noteId']
+    # note = Note.query.get(noteId)
+    # if note:
+    #     if note.user_id == current_user.id:
+    #         db.session.commit()
+
+    # return jsonify({})   
+    my_discussions = current_user.discussions.all()
+    return render_template("editPost.html", my_discussions=my_discussions, user=current_user, editedNote=editedNote)
 
 
 @ views.route('/add', methods=['GET', 'POST'])
