@@ -18,9 +18,15 @@
   {% if note.discussion_id == some_discussion.id%}
     <div class="card" style="width: 80rem;">
       <div class="card-body">
-          <h5 align="center" class="card-title"><a href="{{url_for('profile.viewProfile', user_id = note.user_id)}}">{{note.first_name}}</a> ->
+        <!--  -->
+        <div class="media">
+          <a href="{{url_for('profile.viewProfile', user_id = note.user_id)}}">
+            <img class="rounded-circle account-img" src={{url_for('static', filename='assets/profile_pictures/' + note.profile_picture)}} width=80px height=80px>
+          </a>
+        </div>
+          <h5 align="left" class="card-title"><a href="{{url_for('profile.viewProfile', user_id = note.user_id)}}">{{note.first_name}}</a> ->
             {{note.discussion_name}}</h5>
-        <h6 align= "center" class="card-title">{{note.title}}:  <span>{{note.date}}</span></h6>
+        <h6 align= "left" class="card-title">{{note.title}}:  <span>{{note.date}}</span></h6>
         <p class="card-text">{{ note.data }}</p>
         {%if note.user_id == user.id%}
         <button type="button" class="close" onClick="deleteNote({{ note.id }})">
