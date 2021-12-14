@@ -10,6 +10,7 @@ from website.form import UpdateAccountForm
 
 import secrets
 import os
+from PIL import Image
 from website.views import app
 
 profile = Blueprint('profile', __name__)
@@ -20,7 +21,10 @@ def save_picture(form_picture):
     _, f_ext = os.path.splitext(form_picture.filename)
     picture_fn = random_hex + f_ext
     picture_path = os.path.join(app.root_path, 'static/assets/profile_pictures', picture_fn)
-    form_picture.save(picture_path)
+    output_size = (400,400)
+    i = Image.open(form_picture)
+    i.thumbnail(output_size)
+    i.save(picture_path)
     return picture_fn
 
 @profile.route('/profile/<int:user_id>', methods=['GET', 'POST'])
@@ -31,12 +35,14 @@ def viewProfile(user_id):
             picture_file = save_picture(form.picture.data)
             current_user.profile_picture = picture_file
             db.session.commit()
-        flash('Image Uploaded!', category='success')
-        return redirect("/")
+            flash('Image Uploaded!', category='success')
+        else:
+            flash('Please upload an image!', category='error')
+        return redirect("/profile/" + str(user_id))
     user = User.query.filter_by(id=user_id).first()
     notes = Note.query.filter_by(user_id=user_id).order_by(Note.date.desc()).limit(3).all()
         # INNER JOIN User ON Note.user_id == User.id AND user_id == user.id ORDER BY Note.date DESC LIMIT 4
-    image_file = url_for('static', filename='assets/profile_pictures/' + current_user.profile_picture)
+    image_file = url_for('static', filename='assets/profile_pictures/' + user.profile_picture)
     return render_template("profile.html", notes=notes, user=user, image_file=image_file, form=form)
 
 
