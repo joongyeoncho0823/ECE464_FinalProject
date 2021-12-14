@@ -4,7 +4,6 @@ from sqlalchemy.exc import IntegrityError
 from .models import Note, Discussion, User
 from .db_config import db
 import json
-import re
 
 views = Blueprint('views', __name__)
 
@@ -57,8 +56,8 @@ def add():
             db.session.commit()
             flash('Posted!', category='success')
             return redirect(url_for('views.home'))
-
-    return render_template("addPost.html", user=current_user)
+    my_discussions = current_user.discussions.all()
+    return render_template("addPost.html", my_discussions=my_discussions, user=current_user)
 
 
 @ views.route('/discussion_page')
